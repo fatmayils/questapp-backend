@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.project.questapp.entities.User;
 import com.project.questapp.repos.UserRepository;
+import com.project.questapp.responses.UserResponse;
 import com.project.questapp.services.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/users") //ana path adı
 public class UsersController {
 	private UserService userService;
 
@@ -29,9 +30,9 @@ public class UsersController {
 	}
 
 	@GetMapping("/{userId}")
-	public User getOneUser(@PathVariable Long userId) {
-		// custom excepetion
-		return userService.getOneUserById(userId);
+	public UserResponse getOneUser(@PathVariable Long userId) {
+		// custom excepetion ekle
+		return new UserResponse(userService.getOneUserById(userId));
 	}
 
 	@PutMapping("/{userId}")
@@ -43,6 +44,50 @@ public class UsersController {
 
 	@DeleteMapping("/{userId}")
 	public void deleteOneUser(@PathVariable Long userId) {
-		userService.deleteOneUser(userId);;
+		userService.deleteOneUser(userId);
 	}
+	
+	@GetMapping("/activity/{userId}")
+	public List<Object> getUserActivity(@PathVariable Long userId){
+		
+		return userService.getUserActivity(userId);
+ 
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -22,18 +22,21 @@ public class PostsController {
 	@GetMapping
 	public List<PostResponse> getAllPost(@RequestParam Optional<Long> userId) {
 		return postService.getAllPost(userId);
-	}
+	} 
 
 	@GetMapping("/{postId}")
-	public Post getOnePost(@PathVariable Long postId) {
-		return postService.getOnePostById(postId);
+	public PostResponse getOnePost(@PathVariable Long postId) {
+		return postService.getOnePostByIdWithLikes(postId);
 
 	}
 
+	//başlangıçta PostCreateRequest yerine post yazmıştık ancak bize sadece userId lazım ve diğer alanlar.
 	@PostMapping
 	public Post createOnePost(@RequestBody PostCreateRequest newPostRequest) {
 		return postService.createOnePost(newPostRequest);
-	}
+	} 
+	
+
 
 	@PutMapping("/{postId}")
 	public Post updateOnePost(@PathVariable Long postId, @RequestBody PostUpdateRequest updatePost) {

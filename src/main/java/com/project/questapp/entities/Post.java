@@ -1,5 +1,7 @@
 package com.project.questapp.entities;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.OnDelete;
@@ -21,8 +23,8 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)//başta lazy idi,şimdi eager yaptık
+	@JoinColumn(name = "user_id", nullable = false)//userId yi bağladığımızı söylememiz lazım
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	//@JsonIgnore FetchType.LAZY yi eager yaptığımız için ignore ye gerek kalmadı
 	User user;
@@ -30,5 +32,10 @@ public class Post {
 	@Lob
 	@Column(columnDefinition = "text")
 	String text;
+	
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	Date createDate;
+	
 
 }

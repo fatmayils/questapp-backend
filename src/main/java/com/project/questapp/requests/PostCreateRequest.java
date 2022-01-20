@@ -7,6 +7,6 @@ public class PostCreateRequest {
 
 	Long id;
 	String text;
-	String tittle;
+	String title;
 	Long userId;
 }

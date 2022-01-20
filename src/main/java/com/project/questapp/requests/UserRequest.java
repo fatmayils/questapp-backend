@@ -3,8 +3,9 @@ package com.project.questapp.requests;
 import lombok.Data;
 
 @Data
-public class PostUpdateRequest {
+public class UserRequest {
+	
+	String userName;
+	String password;
 
-	String text;
-	String title;
 }

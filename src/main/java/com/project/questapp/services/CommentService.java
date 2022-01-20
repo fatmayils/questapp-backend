@@ -1,5 +1,6 @@
 package com.project.questapp.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class CommentService {
 
 	public List<Comment> getAllCommentsWithParam(Optional<Long> userId, Optional<Long> postId) {
 		if (userId.isPresent() && postId.isPresent()) {
-			return commentRepository.findByUserIdAndPostId(userId.get(), postId.get());
+			return commentRepository.findByUserIdAndPostId(userId.get(), postId.get());//.get() neden yazdık?Araştır:get deyince içerisindeki value yi alıyoruz
 		} else if (userId.isPresent()) {
 			return commentRepository.findByUserId(userId.get());
 		} else if (postId.isPresent()) {
@@ -44,15 +45,18 @@ public class CommentService {
 
 	public Comment createOneComment(CommentCreateRequest newComment) {
 		User user = userService.getOneUserById(newComment.getUserId());
-		Post post = postService.getOnePostById(newComment.getId());
+		Post post = postService.getOnePostById(newComment.getPostId());
 		if (user != null && post != null) {
 			Comment commentToSave = new Comment();
 			commentToSave.setId(newComment.getId());
 			commentToSave.setPost(post);
 			commentToSave.setUser(user);
 			commentToSave.setText(newComment.getText());
+			commentToSave.setCreateDate(new Date());
+
 			return commentRepository.save(commentToSave);
 		}
+		else
 		return null;
 	}
 

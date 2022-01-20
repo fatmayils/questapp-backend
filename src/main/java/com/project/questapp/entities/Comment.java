@@ -1,5 +1,7 @@
 package com.project.questapp.entities;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.OnDelete;
@@ -35,4 +37,9 @@ public class Comment {
 	@Lob
 	@Column(columnDefinition = "text")
 	String text;
+	
+	
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	Date createDate;
 }

@@ -1,29 +1,41 @@
 package com.project.questapp.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.questapp.entities.Post;
 import com.project.questapp.entities.User;
+import com.project.questapp.repos.LikeRepository;
 import com.project.questapp.repos.PostRepository;
 import com.project.questapp.requests.PostCreateRequest;
 import com.project.questapp.requests.PostUpdateRequest;
 import com.project.questapp.responses.PostResponse;
+import com.project.questapp.entities.Like;
+import com.project.questapp.responses.LikeResponse;
+
 
 @Service
 public class PostService {
 	private PostRepository postRepository;
 
-	private UserService userService;
+	private UserService userService;//kullanıcının var olup olmadığını kontrol ederken kullandık 
 
+	private LikeService likeService;
 	public PostService(PostRepository postRepository, UserService userService) {
 		this.postRepository = postRepository;
 		this.userService = userService;
+	   
 	}
-
+	@Autowired
+	public void setLikeService(LikeService likeService)
+	{
+		this.likeService=likeService;
+	}
 	public List<PostResponse> getAllPost(Optional<Long> userId) {
 		List<Post> list;
 		if (userId.isPresent()) {
@@ -31,24 +43,37 @@ public class PostService {
 		}
 		else {
 		 list=postRepository.findAll();}
-		return list.stream().map(p->new PostResponse(p)).collect(Collectors.toList());
+		return list.stream().map(p->{
+		List<LikeResponse> likes=likeService.getAllLikesWithParam(Optional.ofNullable(null),Optional.of( p.getId()));
+			
+		return new PostResponse(p,likes);}).collect(Collectors.toList());
 	}
 
+	
 	public Post getOnePostById(Long postId) {
 
 		return postRepository.findById(postId).orElse(null);
 	}
-
+	
+	public PostResponse getOnePostByIdWithLikes(Long postId) {
+		Post post=postRepository.findById(postId).orElse(null);
+		List<LikeResponse> likes=likeService.getAllLikesWithParam(Optional.ofNullable(null),Optional.of( postId));
+		
+		return new PostResponse(post,likes);
+	}
+	
 	public Post createOnePost(PostCreateRequest newPostCreateRequest) {
 		User user = userService.getOneUserById(newPostCreateRequest.getUserId());
 		if (user == null) {
 			return null;
 		}
+		//yukarıda userID var mı yok mu kontrol ettik
 		Post toSave = new Post();
 		toSave.setId(newPostCreateRequest.getId());
 		toSave.setText(newPostCreateRequest.getText());
-		toSave.setTitle(newPostCreateRequest.getTittle());
+		toSave.setTitle(newPostCreateRequest.getTitle());
 		toSave.setUser(user);
+		toSave.setCreateDate(new Date());
 		return postRepository.save(toSave);
 	}
 
@@ -57,7 +82,7 @@ public class PostService {
 		if (post.isPresent()) {
 			Post toUpdate = post.get();
 			toUpdate.setText(updatePost.getText());
-			toUpdate.setTitle(updatePost.getTittle());
+			toUpdate.setTitle(updatePost.getTitle());
 			postRepository.save(toUpdate);
 			return toUpdate;
 		}

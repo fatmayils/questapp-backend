@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "user")
-@Data
+@Entity //bu class databaseye map lenecek
+@Table(name = "user") //tablo adı
+@Data //loombok-getter setter için
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -17,4 +17,5 @@ public class User {
 	Long id;
 	String userName;
 	String password;
+	int avatar;
 }
